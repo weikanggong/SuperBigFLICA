@@ -16,17 +16,17 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 
 Please divide your data into train, validation, and test.  
 The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.                      
-**x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.
-**x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.
-**y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.
-**y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), test set nIDP.
-**relative_weight**: a weight that balances the imaging reconstuction loss and nIDP prediction loss, you can specify it in (0,1). The smaller the relative_weight, the larger the imaging reconstuction loss.
-**nlat**: the number of components (i.e., ICs) for SuperBigFLICA,
-**lr**: the learning rate (e.g. 0.001)
-**batch_size**: the batch size used for optimization.
-**device**: 'cpu' if uses CPU for training, 'cuda' if use GPU.
-**dropout**: The probability of dropout the imaging data in training.
-You can keep other parameters as default.
+**x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
+**x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
+**y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.  
+**y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), test set nIDP.  
+**relative_weight**: a weight that balances the imaging reconstuction loss and nIDP prediction loss, you can specify it in (0,1). The smaller the relative_weight, the larger the imaging reconstuction loss.  
+**nlat**: the number of components (i.e., ICs) for SuperBigFLICA.  
+**lr**: the learning rate (e.g. 0.001)  
+**batch_size**: the batch size used for optimization.  
+**device**: 'cpu' if uses CPU for training, 'cuda' if use GPU.  
+**dropout**: The probability of dropout the imaging data in training.  
+You can keep other parameters as default.  
 
 
 The second function apply model to the test dataset.
