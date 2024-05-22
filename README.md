@@ -19,7 +19,7 @@ Please divide your data into train, validation, and test sets.
 **1. The first function "SupervisedFLICA" trains the model, and then use a validation set to perform the model selection.**  
 Inputs:  
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
-**x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
+**x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), validation set.  
 **y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.  
 **y_test**: a matrix, each is subject-by-nIDP (could contain NaN in it), test set nIDP.  
 **relative_weight**: a weight that balances the imaging reconstuction loss and nIDP prediction loss, you can specify it in (0,1). The smaller the relative_weight, the larger the imaging reconstuction loss.  
@@ -41,7 +41,7 @@ Outputs:
 
 **2. The second function "get_model_param" apply model to the test dataset.**  
 Inputs:  
-
+**x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
 **best_model**: the model used for eval. If you don't want to use the best performed model in the validation set, you can also use the "final_model" output by the first function (the model of the last epoch).  
 
 Outputs:  
