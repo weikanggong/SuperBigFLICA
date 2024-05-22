@@ -16,7 +16,7 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 
 Please divide your data into train, validation, and test sets.
 
-**The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.**  
+**The first function "SupervisedFLICA" trains the model, and then use a validation set to perform the model selection.**  
 Inputs:  
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
