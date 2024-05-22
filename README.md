@@ -14,8 +14,8 @@ pred_valid, best_model, loss_all_test, best_corr, final_model = SupervisedFLICA(
 lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred_train, pred_test = get_model_param(x_train = Data_train, x_test = Data_test, y_train=y_train, best_model = best_model)
 ```
 
-Please divide your data into train, validation, and test.
-The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.                     
+Please divide your data into train, validation, and test.\\
+The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.\\                     
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.
 **y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.
