@@ -16,12 +16,12 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 
 Please divide your data into train, validation, and test sets.
 
-**The first function "SupervisedFLICA" trains the model, and then use a validation set to perform the model selection.**  
+**1. The first function "SupervisedFLICA" trains the model, and then use a validation set to perform the model selection.**  
 Inputs:  
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
 **y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.  
-**y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), test set nIDP.  
+**y_test**: a matrix, each is subject-by-nIDP (could contain NaN in it), test set nIDP.  
 **relative_weight**: a weight that balances the imaging reconstuction loss and nIDP prediction loss, you can specify it in (0,1). The smaller the relative_weight, the larger the imaging reconstuction loss.  
 **nlat**: the number of components (i.e., ICs) for SuperBigFLICA.  
 **lr**: the learning rate (e.g. 0.001)  
@@ -39,7 +39,7 @@ Outputs:
 **final_model**: the model of the last epoch.
 
 
-**The second function "get_model_param" apply model to the test dataset.**  
+**2. The second function "get_model_param" apply model to the test dataset.**  
 Inputs:  
 
 **best_model**: the model used for eval. If you don't want to use the best performed model in the validation set, you can also use the "final_model" output by the first function (the model of the last epoch).  
@@ -51,3 +51,22 @@ Outputs:
 **modality_weights**: a nlat-by-modality matrix, it is the contribution of each modality to each latent component.  
 **prediction_weights**: a nlat-by-#nIDP matrix, the trained weights of predicting each of the nIDPs using the latent components.  
 **pred_train, pred_test**: the predicted nIDPs by the trained model in training set and test set.  
+
+
+**3. Some other usages:**  
+3.1. **Unsupervised IDP discovery**: one may not have a specific set of nIDP to predict, but only wants to discover imaging latent features from multimodal data. This is the same as done in the BigFLICA:
+```
+Gong, W., Beckmann, C. F., & Smith, S. M. (2021). Phenotype discovery from population brain imaging. Medical image analysis, 71, 102050.
+```
+you can specify "y_train", "y_valid" and "y_test" parameters as random noise in "SupervisedFLICA" and "get_model_param" functions, and set the "relative_weight" parameters as a very large number close to 1, e.g., 0.999999999999, in the above analysis. In this way, the output should be highly similar to the BigFLICA.
+
+
+
+
+
+
+
+
+
+
+
