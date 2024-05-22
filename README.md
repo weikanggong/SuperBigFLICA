@@ -16,7 +16,7 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 
 Please divide your data into train, validation, and test sets.
 
-The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.
+**The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.**  
 
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
@@ -27,15 +27,17 @@ The first function "SupervisedFLICA" trains the model, and then use a validation
 **lr**: the learning rate (e.g. 0.001)  
 **batch_size**: the batch size used for optimization.  
 **device**: 'cpu' if uses CPU for training, 'cuda' if use GPU.  
-**dropout**: The probability of dropout the imaging data in training.  
+**dropout**: The probability of dropout the imaging data in training. 
+**random_seed**: The seed used for the model to reproduce the results.
 You can keep other parameters as default.  
 
 
-The second function apply model to the test dataset.
+**The second function "get_model_param" apply model to the test dataset.**  
 
-For the output,
-lat_train,lat_test are shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.
-spatial_loadings is a list, each element is a voxel-by-nlat independent spatial loading matrix.
-modality_weights is a nlat-by-modality matrix, it is the contribution of each modality to each latent component.
-prediction_weights is a nlat-by-#nIDP matrix, shows the trained weights of predicting each of the nIDPs using the latent components.
-pred_train, pred_test are the predicted nIDPs by the trained model in training set and test set.
+For the output,  
+**lat_train**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.  
+**lat_test**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
+**spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix.  
+**modality_weights**: a nlat-by-modality matrix, it is the contribution of each modality to each latent component.
+**prediction_weights**: a nlat-by-#nIDP matrix, the trained weights of predicting each of the nIDPs using the latent components.
+**pred_train, pred_test**: the predicted nIDPs by the trained model in training set and test set.
