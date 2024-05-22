@@ -1,4 +1,3 @@
-
 import numpy as np
 import scipy
 from scipy import linalg
@@ -256,6 +255,37 @@ class loss_SuperBigFLICA_regression(nn.Module):
         return l, loss_recon, loss_sptial_loadings, loss_mse, loss_pred_weights
 
 
+import pandas as pd
+class load_Multimodal_data1(Dataset):
+        def __init__(self, ids, y=None):
+            #X is a list of data of size [N,M_k]
+            self.ids = ids
+            self.filenames = ['connectome_mean_FA_10M.csv','connectome_mean_length_10M.csv',
+                              'connectome_sift2_fbc_10M.csv','connectome_streamline_count_10M.csv']
+            # self.K = len(X)
+            #y is the label of size [N,Q]
+            self.y = y
+            
+            # self.transform = transform
+            
+        def __len__(self):
+            return self.y.shape[0]
+        
+        def __getitem__(self, index):
+
+            image = []
+            for K in range(0,4):
+                ff = '/public/home/fuyan/dwi_connectome/' + ff[index] + self.filenames[K]
+                # ff = '/public/home/fuyan/dwi_connectome/' + '1000012/' + 'connectome_mean_FA_10M.csv'
+                data = pd.read_csv(ff,header=None).to_numpy()
+                mask = np.triu(np.ones((data.shape[0], data.shape[1])), 1)
+                d = np.triu(data,1)[mask>0]
+                d = torch.FloatTensor(d).unsqueeze(0)
+                image[K] =  (d - d.mean()) / d.std()               
+            
+            y = self.y[index,:]
+            return image, y
+            
 class load_Multimodal_data(Dataset):
         def __init__(self, X, y=None, transform=None):
             #X is a list of data of size [N,M_k]
@@ -278,9 +308,7 @@ class load_Multimodal_data(Dataset):
             if self.y is not None:
                 return image, torch.FloatTensor(self.y[index,:]).float()
             else:
-                return image
-            
-            
+                return image            
             
 class SupervisedFLICAmodel(nn.Module):
     def __init__(self,nfea, nlat, ntask, dropout = 0.5, device = 'cpu', init_spatial_loading = None, init_weight_pred=None, init_bais_pred=None):
@@ -385,7 +413,7 @@ def Initialize_SuperBigFLICA(x_train,y_train,nlat,train_ind = None):
 
     
 def SupervisedFLICA(x_train, y_train, nlat, x_test, y_test, random_seed = 666, train_ind = None, init_method = 'random',
-                         dropout = 0.25, device = 'cpu', auto_weight = [1,1,1,1], lambdas = [0.25, 0.25, 0.25, 0.25] ,lr=0.001,batch_size=512,maxiter=30):
+                         dropout = 0.25, device = 'cpu', auto_weight = [1,1,1,1], lambdas = [0.25, 0.25, 0.25, 0.25] ,lr=0.001,batch_size=512,maxiter=50):
     #Inputs:
     #
     #x_train: a list, each is a data matrix of size [N_train,M_k], doing minibatch ICA on N. (N = subject, M_k = features/voxels)
@@ -440,7 +468,9 @@ def SupervisedFLICA(x_train, y_train, nlat, x_test, y_test, random_seed = 666, t
             x_stds = x_train[i].std(axis=0)
             x_train[i] = (x_train[i] - x_mean)/x_stds
             x_test[i] = (x_test[i] - x_mean)/x_stds
-
+            print(torch.sum(torch.isnan(x_train[i])))
+            print(torch.sum(torch.isnan(x_test[i])))
+            
     y_mean = np.nanmean(y_train, axis=0)
     y_stds = np.nanstd(y_train, axis=0)
     y_train = (y_train - y_mean)/y_stds    
@@ -616,33 +646,107 @@ def SupervisedFLICA(x_train, y_train, nlat, x_test, y_test, random_seed = 666, t
                       .format(epoch, time.time() - tt ))     
 
     best_model.to('cpu')
+    last_model = model.to('cpu')
     
-    
-    return pred_best, best_model, loss_all_test, best_corr
+    return pred_best, best_model, loss_all_test, best_corr, last_model
 
 
 
-def get_model_param(x_train, x_test, best_model, get_sp_load = 0):
+def get_model_param(x_train, x_test, y_train, best_model, get_sp_load = 1):
     nmod = len(x_train)
     best_model.eval()        
-    spatial_loadings=[]
-    if get_sp_load == 1:
-        for i in range(0,nmod):
-            spatial_loadings.append(torch.Tensor.cpu(best_model.spatial_loading[i]).detach().numpy())
-            
+
     modality_weights = F.softmax(torch.Tensor.cpu(best_model.mod_weight),dim=1).detach().numpy()
     
     prediction_weights = torch.Tensor.cpu(best_model.weight_pred).detach().numpy()
 
+    print('Data Normalization...')
+    is_norm = True
+    if is_norm is True:
+        for i in range(0,len(x_train)):
+            x_mean = x_train[i].mean(axis=0)
+            x_stds = x_train[i].std(axis=0)
+            x_train[i] = (x_train[i] - x_mean)/x_stds
+            x_test[i] = (x_test[i] - x_mean)/x_stds
+            print(torch.sum(torch.isnan(x_train[i])))
+            print(torch.sum(torch.isnan(x_test[i])))
+            
+    y_mean = np.nanmean(y_train, axis=0)
+    y_stds = np.nanstd(y_train, axis=0)
+    y_train = (y_train - y_mean)/y_stds    
+    
+    print('Done...')
+    
     _,_,lat_train,pred_train,_  = best_model(x = x_train,device='cpu') 
     _,_,lat_test,pred_test,_  = best_model(x = x_test,device='cpu')    
 
     lat_train = torch.Tensor.cpu(lat_train).detach().numpy()
     lat_test = torch.Tensor.cpu(lat_test).detach().numpy()
-    pred_train = torch.Tensor.cpu(pred_train).detach().numpy()
-    pred_test = torch.Tensor.cpu(pred_test).detach().numpy()
     
-    return lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred_train,pred_test
+    pred_train = pred_train.detach().numpy() * y_stds + y_mean
+    pred_test = pred_test.detach().numpy() * y_stds + y_mean
+    
+    # pred_train = torch.Tensor.cpu(pred_train).detach().numpy()
+    # pred_test = torch.Tensor.cpu(pred_test).detach().numpy()
+    
+    spatial_loadings=[]
+    if get_sp_load == 1:
+        for i in range(0,nmod):
+            # spatial_loadings.append(torch.Tensor.cpu(best_model.spatial_loading[i]).detach().numpy())
+            spatial_loadings.append( sKPCR_regression(lat_train, x_train[0].numpy(), np.ones((lat_train.shape[0],1))))
+                
+    return lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred_train, pred_test
 
         
+def sKPCR_regression(X,Y,cov):
 
+    contrast=np.transpose(np.hstack(  ( np.eye(X.shape[1],X.shape[1]) , np.zeros((X.shape[1],cov.shape[1])) ))   )
+    contrast=np.array(contrast,dtype='float32')
+    
+    design=np.hstack((X,cov))
+#     print(design)
+#     ss = np.linalg.pinv(design).T
+    #degree of freedom
+    df=design.shape[0]-design.shape[1]
+    #
+    ss=np.linalg.inv(np.dot(np.transpose(design),design))
+
+    beta=np.dot(np.dot(ss,np.transpose(design)),Y)
+
+    Res=Y-np.dot(design,beta)
+
+    sigma=np.reshape(np.sqrt(np.divide(np.sum(np.square(Res),axis=0),df)),(1,beta.shape[1]))
+
+    tmp1=np.dot(beta.T,contrast)
+    tmp2=np.array(np.diag(np.dot(np.dot(contrast.T,ss),contrast)),ndmin=2)
+
+    Tstat=np.divide(tmp1,np.dot(sigma.T,np.sqrt(tmp2)  ))
+
+
+    return Tstat
+
+def get_res(X,Y):
+
+    X= np.hstack((X, np.ones((X.shape[0], 1))))
+    
+    beta=np.dot(np.linalg.pinv(X),Y)
+
+    Res=Y-np.dot(X,beta)
+
+    return Res
+
+def nets_zscore(x):
+    # x : a nsubject * nfeature numpy matrix
+    
+    x_zscore=(x-x.mean(axis=0))
+    stds=x.std(axis=0)
+    index=stds==0
+       
+    if sum(index)>0:
+        stds[index]=0.1
+        print('Warning: '+str(sum(index))+' of the features are all zero or constants')
+        print('Normalizing them to all zeros ...')
+    
+    x_zscore=x_zscore/stds
+    
+    return x_zscore
