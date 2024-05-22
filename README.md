@@ -17,7 +17,7 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 Please divide your data into train, validation, and test sets.
 
 The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.
-```
+
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
 **y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.  
@@ -29,7 +29,7 @@ The first function "SupervisedFLICA" trains the model, and then use a validation
 **device**: 'cpu' if uses CPU for training, 'cuda' if use GPU.  
 **dropout**: The probability of dropout the imaging data in training.  
 You can keep other parameters as default.  
-```
+
 
 The second function apply model to the test dataset.
 
