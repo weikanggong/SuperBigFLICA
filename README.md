@@ -1,5 +1,8 @@
-# SuperBigFLICA: test version 0.1
+# SuperBigFLICA
+The code implements the algorithm in the following paper:
+```
 Gong, W., Bai, S., Zheng, Y. Q., Smith, S. M., & Beckmann, C. F. (2022). Supervised Phenotype Discovery from Multimodal Brain Imaging. IEEE Transactions on Medical Imaging. 
+```
 
 In python, install pytorch first (https://pytorch.org/get-started/locally/), and then please use the following two functions to perform the analysis:
 
