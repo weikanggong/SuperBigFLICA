@@ -17,7 +17,7 @@ lat_train,lat_test, spatial_loadings, modality_weights, prediction_weights, pred
 Please divide your data into train, validation, and test sets.
 
 **The first function "SupervisedFLICA" trains the model, and then use a validation set to select the best model.**  
-
+Inputs:  
 **x_train**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), training set.  
 **x_test**: a list, each element is a subject-by-feature matrix of an imaging modality (without NaN), test set.  
 **y_train**: a matrix, each is subject-by-nIDP (could contain NaN in it), training set nIDP.  
@@ -31,10 +31,20 @@ Please divide your data into train, validation, and test sets.
 **random_seed**: The seed used for the model to reproduce the results.
 You can keep other parameters as default.  
 
+Outputs:  
+**pred_valid**: the predicted nIDP in the validation set.  
+**best_model**: the model that can give the best nIDP prediction in the validation set.  
+**loss_all_test**: the training losses.  
+**best_corr**: the evaluation metric (If there is only one nIDP, the metric is the correlation; if there are multiple nIDPs, the metric is the sum of correlations that are larger than 0.1).  
+**final_model**: the model of the last epoch.
+
 
 **The second function "get_model_param" apply model to the test dataset.**  
+Inputs:  
 
-For the output,  
+**best_model**: the model used for eval. If you don't want to use the best performed model in the validation set, you can also use the "final_model" output by the first function (the model of the last epoch).  
+
+Outputs:  
 **lat_train**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
 **lat_test**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
 **spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix.    
