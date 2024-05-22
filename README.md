@@ -1,5 +1,5 @@
 # SuperBigFLICA
-The code implements the algorithm in the following paper:
+The code implements the SuperBigFLICA approach published in the following paper:
 ```
 Gong, W., Bai, S., Zheng, Y. Q., Smith, S. M., & Beckmann, C. F. (2022). Supervised phenotype discovery from multimodal brain imaging. IEEE Transactions on Medical Imaging, 42(3), 834-849.
 
@@ -58,7 +58,7 @@ Outputs:
 ```
 Gong, W., Beckmann, C. F., & Smith, S. M. (2021). Phenotype discovery from population brain imaging. Medical image analysis, 71, 102050.
 ```
-you can specify "y_train", "y_valid" and "y_test" parameters as random noise in "SupervisedFLICA" and "get_model_param" functions, and set the "relative_weight" parameters as a very large number close to 1, e.g., 0.999999999999, in the above analysis. In this way, the output should be highly similar to the BigFLICA.
+you can specify "y_train", "y_valid" and "y_test" parameters as random noise in "SupervisedFLICA" and "get_model_param" functions, and set the "relative_weight" parameter as a very large number close to 1, e.g., 0.999999999999, in the above analysis. In this way, the output should be highly similar to the BigFLICA.
 
 
 
