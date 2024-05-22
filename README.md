@@ -47,14 +47,14 @@ Inputs:
 Outputs:  
 **lat_train**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
 **lat_test**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
-**spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix.    
+**spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix. The loadings has been z-score normalized by regress the lat_train onto the original data x_train.   
 **modality_weights**: a nlat-by-modality matrix, it is the contribution of each modality to each latent component.  
 **prediction_weights**: a nlat-by-#nIDP matrix, the trained weights of predicting each of the nIDPs using the latent components.  
 **pred_train, pred_test**: the predicted nIDPs by the trained model in training set and test set.  
 
 
 **3. Some other usages:**  
-3.1. **Unsupervised IDP discovery**: one may not have a specific set of nIDP to predict, but only wants to discover imaging latent features from multimodal data. This is the same as done in the BigFLICA:
+3.1 Unsupervised IDP discovery: one may not have a specific set of nIDP to predict, but only wants to discover imaging latent features from multimodal data. This is the same as done in the BigFLICA:
 ```
 Gong, W., Beckmann, C. F., & Smith, S. M. (2021). Phenotype discovery from population brain imaging. Medical image analysis, 71, 102050.
 ```
