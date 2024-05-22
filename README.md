@@ -35,9 +35,9 @@ You can keep other parameters as default.
 **The second function "get_model_param" apply model to the test dataset.**  
 
 For the output,  
-**lat_train**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.  
+**lat_train**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
 **lat_test**: the multimodal shared latent variables (subject-by-nlat), use it to correlate/predict other nIDPs.   
-**spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix.  
-**modality_weights**: a nlat-by-modality matrix, it is the contribution of each modality to each latent component.
-**prediction_weights**: a nlat-by-#nIDP matrix, the trained weights of predicting each of the nIDPs using the latent components.
-**pred_train, pred_test**: the predicted nIDPs by the trained model in training set and test set.
+**spatial_loadings**: a list, each element is a voxel-by-nlat independent spatial loading matrix.    
+**modality_weights**: a nlat-by-modality matrix, it is the contribution of each modality to each latent component.  
+**prediction_weights**: a nlat-by-#nIDP matrix, the trained weights of predicting each of the nIDPs using the latent components.  
+**pred_train, pred_test**: the predicted nIDPs by the trained model in training set and test set.  
